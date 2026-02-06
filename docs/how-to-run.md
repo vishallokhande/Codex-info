@@ -20,7 +20,37 @@ docker compose up --build
 
 ---
 
-## Option B: Start with a Kubernetes dev cluster
+## Option B: Run without Docker (local or VM)
+
+### 1) Start the ML service
+```
+python -m venv .venv
+source .venv/bin/activate
+pip install -r ml/requirements.txt
+uvicorn ml.app.main:app --reload --port 9000
+```
+
+### 2) Start the backend service (new terminal)
+```
+source .venv/bin/activate
+pip install -r backend/requirements.txt
+uvicorn backend.app.main:app --reload --port 8000
+```
+
+### 3) Start the frontend (new terminal)
+```
+cd frontend
+python -m http.server 8080
+```
+
+### 4) Validate
+- Frontend: http://localhost:8080
+- Backend health: http://localhost:8000/health
+- ML health: http://localhost:9000/health
+
+---
+
+## Option C: Start with a Kubernetes dev cluster
 
 ### 1) Provision cluster
 Use Terraform modules in `infra/` to stand up a dev cluster.

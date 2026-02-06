@@ -1,9 +1,18 @@
-from fastapi import FastAPI
 import os
+
 import httpx
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI(title="SeatSense Live Backend")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 ML_SERVICE_URL = os.getenv("ML_SERVICE_URL", "http://localhost:9000")
 

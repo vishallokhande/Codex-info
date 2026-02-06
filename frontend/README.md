@@ -5,7 +5,8 @@ The frontend provides a fast, personalized event discovery and booking experienc
 
 ## MVP skeleton in this repo
 - `index.html` renders a simple UI for events, recommendations, and health.
-- It proxies API calls to the backend and ML service through Nginx.
+- It calls the backend and ML service directly in dev mode. You can override the base
+  URLs by setting `window.API_BASE` and `window.ML_BASE` in the browser console.
 
 ## Pages
 - Home with recommended events.

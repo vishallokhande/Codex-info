@@ -83,8 +83,11 @@
     </main>
     <div class="footer">MVP skeleton for SeatSense Live</div>
     <script>
+      const API_BASE = window.API_BASE || "http://localhost:8000";
+      const ML_BASE = window.ML_BASE || "http://localhost:9000";
+
       async function loadEvents() {
-        const response = await fetch("/api/events");
+        const response = await fetch(`${API_BASE}/events`);
         const data = await response.json();
         const list = document.getElementById("events");
         list.innerHTML = "";
@@ -96,7 +99,9 @@
       }
 
       async function loadRecommendations() {
-        const response = await fetch("/api/recommendations?user_id=guest");
+        const response = await fetch(
+          `${API_BASE}/recommendations?user_id=guest`
+        );
         const data = await response.json();
         const list = document.getElementById("recommendations");
         list.innerHTML = "";
@@ -109,8 +114,8 @@
 
       async function loadHealth() {
         const [backend, ml] = await Promise.all([
-          fetch("/api/health").then((res) => res.json()),
-          fetch("/ml/health").then((res) => res.json()),
+          fetch(`${API_BASE}/health`).then((res) => res.json()),
+          fetch(`${ML_BASE}/health`).then((res) => res.json()),
         ]);
         const list = document.getElementById("health");
         list.innerHTML = "";
