@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SeatSense Live</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        background: #0b1220;
+        color: #e6ecf5;
+      }
+      header {
+        padding: 32px 48px;
+        background: #101a30;
+        border-bottom: 1px solid #1e2a44;
+      }
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 28px;
+      }
+      main {
+        padding: 32px 48px;
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .card {
+        background: #141f36;
+        border: 1px solid #1f2c49;
+        padding: 20px;
+        border-radius: 12px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #2b3d63;
+        font-size: 12px;
+        margin-bottom: 12px;
+      }
+      .footer {
+        padding: 24px 48px;
+        border-top: 1px solid #1e2a44;
+        color: #9fb0d1;
+      }
+      button {
+        background: #2a7ade;
+        color: #fff;
+        border: none;
+        padding: 10px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      ul {
+        padding-left: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>SeatSense Live</h1>
+      <p>Real-time discovery and booking with AI-powered recommendations.</p>
+      <button onclick="loadRecommendations()">Load Recommendations</button>
+    </header>
+    <main>
+      <section class="card">
+        <div class="badge">Discovery</div>
+        <h2>Top Events</h2>
+        <ul id="events"></ul>
+      </section>
+      <section class="card">
+        <div class="badge">AI/ML</div>
+        <h2>Recommendations</h2>
+        <ul id="recommendations"></ul>
+      </section>
+      <section class="card">
+        <div class="badge">Ops</div>
+        <h2>System Health</h2>
+        <ul id="health"></ul>
+      </section>
+    </main>
+    <div class="footer">MVP skeleton for SeatSense Live</div>
+    <script>
+      async function loadEvents() {
+        const response = await fetch("/api/events");
+        const data = await response.json();
+        const list = document.getElementById("events");
+        list.innerHTML = "";
+        data.events.forEach((event) => {
+          const item = document.createElement("li");
+          item.textContent = `${event.title} — ${event.venue} (${event.date})`;
+          list.appendChild(item);
+        });
+      }
+
+      async function loadRecommendations() {
+        const response = await fetch("/api/recommendations?user_id=guest");
+        const data = await response.json();
+        const list = document.getElementById("recommendations");
+        list.innerHTML = "";
+        data.ranked_events.forEach((event) => {
+          const item = document.createElement("li");
+          item.textContent = `${event.id} (score: ${event.score})`;
+          list.appendChild(item);
+        });
+      }
+
+      async function loadHealth() {
+        const [backend, ml] = await Promise.all([
+          fetch("/api/health").then((res) => res.json()),
+          fetch("/ml/health").then((res) => res.json()),
+        ]);
+        const list = document.getElementById("health");
+        list.innerHTML = "";
+        [backend, ml].forEach((svc) => {
+          const item = document.createElement("li");
+          item.textContent = `${svc.service}: ${svc.status}`;
+          list.appendChild(item);
+        });
+      }
+
+      loadEvents();
+      loadHealth();
+    </script>
+  </body>
+</html>
