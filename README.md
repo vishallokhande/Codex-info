@@ -30,8 +30,7 @@ SeatSense Live targets:
 ├── frontend/
 ├── ml/
 ├── infra/
-├── ci/
-└── docs/
+└── ci/
 ```
 
 ---
@@ -123,15 +122,81 @@ Users -> Web App -> API Gateway -> Services (Search, Booking, Payments, Catalog)
 
 ---
 
-## Next steps
-See each module README for deeper setup notes:
-- [backend/README.md](backend/README.md)
-- [frontend/README.md](frontend/README.md)
-- [ml/README.md](ml/README.md)
-- [infra/README.md](infra/README.md)
-- [ci/README.md](ci/README.md)
-- [docs/README.md](docs/README.md)
+## Module responsibilities (current MVP)
+- **backend/**: FastAPI service that serves event listings and proxies recommendation requests to the ML service.
+- **ml/**: FastAPI service that returns ranked event IDs with mock scores.
+- **frontend/**: Static UI that calls the backend/ML APIs directly in dev mode.
+- **infra/**: Placeholder for Terraform/Kubernetes manifests as the project scales.
+- **ci/**: Placeholder for CI/CD workflows and release automation.
 
-Additional guidance:
-- [docs/project-brief.md](docs/project-brief.md)
-- [docs/how-to-run.md](docs/how-to-run.md)
+---
+
+## How to run (local)
+
+### Option A: Docker Compose (recommended)
+From the repo root:
+```
+docker compose up --build
+```
+
+Validate:
+- Frontend: http://localhost:8080
+- Backend health: http://localhost:8000/health
+- ML health: http://localhost:9000/health
+
+### Option B: Run without Docker (local or VM)
+
+1) Start the ML service:
+```
+python -m venv .venv
+source .venv/bin/activate
+pip install -r ml/requirements.txt
+uvicorn ml.app.main:app --reload --port 9000
+```
+
+2) Start the backend service (new terminal):
+```
+source .venv/bin/activate
+pip install -r backend/requirements.txt
+uvicorn backend.app.main:app --reload --port 8000
+```
+
+3) Start the frontend (new terminal):
+```
+cd frontend
+python -m http.server 8080
+```
+
+Validate:
+- Frontend: http://localhost:8080
+- Backend health: http://localhost:8000/health
+- ML health: http://localhost:9000/health
+
+---
+
+## How to push this project to your GitHub repository
+1) Initialize git (if needed):
+```
+git init
+```
+
+2) Add the files:
+```
+git add .
+```
+
+3) Commit:
+```
+git commit -m "Initial SeatSense Live MVP"
+```
+
+4) Create a GitHub repo and add the remote:
+```
+git remote add origin https://github.com/<your-username>/<your-repo>.git
+```
+
+5) Push:
+```
+git branch -M main
+git push -u origin main
+```
